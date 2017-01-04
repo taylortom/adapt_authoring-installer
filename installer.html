@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Adapt installer</title>
+    <script type="text/javascript" src="frontend/src/core/libraries/jquery.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Adapt installer</h1>
+      <div class="instructions row">
+        This page will guide you through the installation of the Adapt authoring tool. Instructions will go here.
+      </div>
+      <div class="progress row">
+        <div class="bar">
+          <div class="fill"></div>
+        </div>
+      </div>
+      <div class="actions row">
+        <button class="primary">Install</button>
+      </div>
+
+      <div class="loading">
+        <div class="loading-inner">
+          <div class="loading-anim">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+            <div class="circle3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+        font-family: sans-serif;
+        background: url('frontend/src/core/user/assets/login_bg.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+      }
+      .container {
+        width: 60%;
+        margin: 0 auto;
+        margin-top: 5%;
+        margin-bottom: 5%;
+      }
+      h1 {
+        text-align: center;
+      }
+      .row {
+        margin-bottom: 20px;
+      }
+      .instructions {
+      }
+      .progress {
+
+      }
+      .actions {
+        text-align: center;
+      }
+      .actions button {
+        min-width: 150px;
+        background-color: #00dd95;
+        border: none;
+        border-radius: 2px;
+        padding: 10px;
+        color: white;
+        cursor: pointer;
+        font-size: 85%;
+      }
+      .actions button:hover {
+        background-color: #00ce8b;
+      }
+    </style>
+    <script>
+      $(function() {
+        $('button.primary').click(function(event) {
+          $(event.currentTarget).hide();
+          $('.instructions').hide();
+          $.post('/', {},
+            function(json) {
+              var data = JSON.parse(json);
+              // only show elements we have data for
+              if(data.buttonLabel) {
+                $(event.currentTarget).text(data.buttonLabel).show();
+              }
+              if(data.text) {
+                $('.instructions').text(data.text).show();
+              }
+            }
+          );
+        });
+      });
+    </script>
+  </body>
+</html>
