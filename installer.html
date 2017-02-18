@@ -2,10 +2,14 @@
 <html lang="en">
   <head>
     <title>Adapt installer</title>
-    <script type="text/javascript" src="frontend/src/core/libraries/jquery.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400" rel="stylesheet">
   </head>
   <body>
     <div class="container">
+      <div class="logo">
+        <img src="https://www.adaptlearning.org/wp-content/uploads/2015/11/home-hero-logo.png">
+      </div>
       <h1>Adapt installer</h1>
       <div class="instructions row">
         This page will guide you through the installation of the Adapt authoring tool. Instructions will go here.
@@ -18,26 +22,15 @@
       <div class="actions row">
         <button class="primary">Install</button>
       </div>
-
-      <div class="loading">
-        <div class="loading-inner">
-          <div class="loading-anim">
-            <div class="circle1"></div>
-            <div class="circle2"></div>
-            <div class="circle3"></div>
-          </div>
-        </div>
-      </div>
     </div>
     <style>
       body {
-        width: 100vw;
-        height: 100vh;
         margin: 0;
         color: #fff;
         font-size: 18px;
-        font-family: sans-serif;
-        background: url('frontend/src/core/user/assets/login_bg.jpg') no-repeat center center fixed;
+        font-family: 'Raleway', sans-serif;
+        background: url('https://www.adaptlearning.org/wp-content/uploads/2015/12/header_image.jpg') no-repeat center center fixed;
+        background-color: ;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -49,32 +42,51 @@
         margin-top: 5%;
         margin-bottom: 5%;
       }
+      .logo {
+        text-align: center;
+        margin-bottom: 50px;
+      }
       h1 {
         text-align: center;
+        font-size: 55px;
+        font-weight: 300;
       }
       .row {
-        margin-bottom: 20px;
+        margin-bottom: 30px !important;
       }
       .instructions {
       }
       .progress {
-
+        height: 10px;
+        border: 1px solid white;
+        border-radius: 5px;
+        width: 50%;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+      .progress .bar {
+        width: 0%;
+        background-color: white;
+        height: 100%;
       }
       .actions {
         text-align: center;
       }
       .actions button {
         min-width: 150px;
-        background-color: #00dd95;
-        border: none;
+        background-color: white;
+        border: 1px solid white;
         border-radius: 2px;
-        padding: 10px;
-        color: white;
+        padding: 15px;
+        color: #36cde8;
         cursor: pointer;
         font-size: 85%;
       }
       .actions button:hover {
-        background-color: #00ce8b;
+        color: white;
+        background-color: transparent;
+        transition-duration: 0.5s;
+        transition-property: all;
       }
     </style>
     <script>
@@ -85,9 +97,15 @@
           $.post('/', {},
             function(json) {
               var data = JSON.parse(json);
+              console.log(data);
               // only show elements we have data for
               if(data.buttonLabel) {
                 $(event.currentTarget).text(data.buttonLabel).show();
+              }
+              if(data.title) {
+                $('h1').text(data.title).show();
+              } else {
+                $('h1').hide();
               }
               if(data.text) {
                 $('.instructions').text(data.text).show();

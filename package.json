@@ -1,0 +1,26 @@
+{
+  "name": "adapt_authoring-installer",
+  "version": "0.0.1",
+  "description": "HTML installer for the Adapt authoring tool",
+  "main": "install.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taylortom/adapt_authoring-installer.git"
+  },
+  "keywords": [
+    "adapt"
+  ],
+  "author": "Thomas Taylor <me@taylortom.co.uk> (http://taylortom.co.uk/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/taylortom/adapt_authoring-installer/issues"
+  },
+  "homepage": "https://github.com/taylortom/adapt_authoring-installer#readme",
+  "dependencies": {
+    "async": "^2.1.4",
+    "finalhandler": "^1.0.0",
+    "open": "0.0.5",
+    "serve-static": "^1.11.2",
+    "underscore": "^1.8.3"
+  }
+}
