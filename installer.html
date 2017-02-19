@@ -3,32 +3,44 @@
   <head>
     <title>Adapt installer</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400" rel="stylesheet">
   </head>
   <body>
     <div class="container">
+
       <div class="logo">
         <img src="https://www.adaptlearning.org/wp-content/uploads/2015/11/home-hero-logo.png">
       </div>
-      <h1>Adapt installer</h1>
-      <div class="instructions row">
-        This page will guide you through the installation of the Adapt authoring tool. Instructions will go here.
+
+      <div class="display">
+        <h1></h1>
+        <div class="body row"></div>
+        <div class="info row"></div>
+        <div class="feedback row"></div>
       </div>
-      <div class="progress row">
-        <div class="bar">
-          <div class="fill"></div>
+
+      <div class="progress-container row">
+        <div class="instructions row"></div>
+        <div class="progress">
+          <div class="bar">
+            <div class="fill"></div>
+          </div>
         </div>
       </div>
+
       <div class="actions row">
         <button class="primary">Install</button>
       </div>
+
     </div>
     <style>
       body {
         margin: 0;
         color: #fff;
-        font-size: 18px;
         font-family: 'Raleway', sans-serif;
+        font-size: 18px;
+        font-weight: 300;
         background: url('https://www.adaptlearning.org/wp-content/uploads/2015/12/header_image.jpg') no-repeat center center fixed;
         background-color: ;
         -webkit-background-size: cover;
@@ -39,8 +51,11 @@
       .container {
         width: 60%;
         margin: 0 auto;
-        margin-top: 5%;
-        margin-bottom: 5%;
+        margin-top: 2%;
+        margin-bottom: 2%;
+      }
+      .display {
+        height: 350px;
       }
       .logo {
         text-align: center;
@@ -54,7 +69,27 @@
       .row {
         margin-bottom: 30px !important;
       }
+      .instructions,
+      .feedback {
+        text-align: center;
+      }
       .instructions {
+        height: 25px;
+      }
+      .info {
+        padding: 20px;
+        border: 1px solid white;
+        border-radius: 5px;
+        background-color: rgba(255,255,255,0.3);
+      }
+      .info .item {
+        margin-bottom: 10px;
+      }
+      .info .item .error {
+        color: #f26c4f;
+        font-weight: 500;
+      }
+      .progress-container {
       }
       .progress {
         height: 10px;
@@ -68,6 +103,10 @@
         width: 0%;
         background-color: white;
         height: 100%;
+        transition-duration: 1s;
+      }
+      .progress .bar.error {
+        background-color: #f26c4f;
       }
       .actions {
         text-align: center;
@@ -90,30 +129,70 @@
       }
     </style>
     <script>
+      var socket = io();
+      socket.on('step', function(data) { console.log(data); onNextStep(processData(data)); });
+      socket.on('info', function(data) { onInfo(processData(data)); });
+      socket.on('error', function(data) { onError(processData(data)); });
+      socket.on('feedback', function(data) { onFeedback(processData(data)); });
+      socket.on('progress', function(data) { onProgress(processData(data)); });
+
+      function processData(data) {
+        return JSON.parse(data);
+      }
+
       $(function() {
-        $('button.primary').click(function(event) {
-          $(event.currentTarget).hide();
-          $('.instructions').hide();
-          $.post('/', {},
-            function(json) {
-              var data = JSON.parse(json);
-              console.log(data);
-              // only show elements we have data for
-              if(data.buttonLabel) {
-                $(event.currentTarget).text(data.buttonLabel).show();
-              }
-              if(data.title) {
-                $('h1').text(data.title).show();
-              } else {
-                $('h1').hide();
-              }
-              if(data.text) {
-                $('.instructions').text(data.text).show();
-              }
-            }
-          );
-        });
+        hideComponents();
+        $('button.primary').click(onButtonClick);
+        onButtonClick();
       });
+
+      function hideComponents() {
+        $('.actions button').hide();
+        $('.body').hide();
+        $('.instructions').html('');
+        $('.info').hide();
+        $('.feedback').hide();
+        $('h1').hide();
+      }
+
+      function onNextStep(step) {
+        // alert('next');
+        console.log('onNextStep', JSON.stringify(step, null, ' '));
+        if(step.buttonLabel) {
+          $('.actions button').text(step.buttonLabel).show();
+        }
+        if(step.title) {
+          $('h1').text(step.title).show();
+        }
+        if(step.body) {
+          $('.body').text(step.body).show();
+        }
+        if(step.instruction) {
+          $('.instructions').text(step.instruction).show();
+        }
+      }
+
+      function onButtonClick() {
+        hideComponents();
+        socket.emit('next');
+      }
+
+      function onInfo(msg) {
+        $('.info').append('<div class="item">' + msg + '</div>').show();
+      }
+      function onError(msg) {
+        onInfo('<span class="error">' + msg + '</span>');
+        $('.actions button').hide();
+        $('.progress .bar').addClass('error');
+      }
+
+      function onFeedback(msg) {
+        $('.feedback').html(msg).show();
+      }
+
+      function onProgress(percent) {
+        $('.progress .bar').css('width', percent + '%');
+      }
     </script>
   </body>
 </html>
